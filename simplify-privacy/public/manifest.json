@@ -1,6 +1,17 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "manifest_version": 3,
+  "name": "Simplify Privacy",
+  "version": "1.0",
+  "description": "A Chrome extension to simplify privacy policies",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      
+    }
+  },
+  "permissions": [
+    "activeTab"
+  ],
   "icons": [
     {
       "src": "favicon.ico",
