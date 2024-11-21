@@ -2,13 +2,11 @@
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
 import { db } from '../firebase.config';
-import { collection, addDoc, setDoc, doc, getDoc } from "firebase/firestore"; 
-import React, { useRef, useEffect, useState } from 'react';
+import { setDoc, doc, getDoc } from "firebase/firestore"; 
+import React, { useEffect, useState } from 'react';
 
 
 function Home({setLoading, setSummary, setError, setScores}) {
-  //const currentUrl = window.location.href; //TODO: Parse current URL
-  //const currentUrl = "test2.com";
   const [currentURL, setURL] = useState(null);
 
   useEffect(() => {
@@ -47,15 +45,14 @@ Contact: Reach out for questions or concerns.`;
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // TODO: If domain already cached, fetch cached result. 
       //console.log("Document data:", docSnap.data());
       testSummary = (docSnap.data().summary);
       testScores = (docSnap.data().scores);
     } else {
-      // TODO: If domain not cached, get new result and store in cache 
+      // If domain not cached, get new result and store in cache 
       // TODO: Add LLM/Score logic
 
-      // Add a new document in collection "cities"
+      // Store new URL result
       await setDoc(docRef, {
         summary: testSummary,
         scores: testScores,
@@ -63,15 +60,10 @@ Contact: Reach out for questions or concerns.`;
 
       console.log("No such document!");
     }
-    
-    // Testing logic with 3 second delay for now
-    
+        
     setSummary(testSummary);
     setScores(testScores);
     setLoading(false)
-
-
-    // setLoading(false);
   }
  
   return (
