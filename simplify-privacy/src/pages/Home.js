@@ -1,13 +1,18 @@
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
-import { auth, db } from '../../Firebase';
-import { collection, addDoc, setDoc, doc } from "firebase/firestore"; 
+import { db } from '../firebase.config';
+import { collection, addDoc, setDoc, doc, getDoc } from "firebase/firestore"; 
 import React, { useRef, useEffect, useState } from 'react';
 
 
 function Home({setLoading, setSummary, setError, setScores}) {
+  // const currentUrl = window.location.href; //TODO: Parse current URL
+  const currentUrl = "test";
 
-  const testSummary = `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
+  async function handleClick () {
+    setLoading(true);
+
+    let testSummary = `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
 Usage: Data is used for services, transactions, communication, and analytics.
 Sharing: Shared only with trusted third parties or for legal compliance.
 Security: Measures are in place to protect your information.
@@ -16,20 +21,27 @@ Third Parties: Not responsible for external sites linked on the platform.
 Your Rights: Access, edit, or delete your data; opt-out of marketing.
 Updates: Policy changes take effect when posted; check regularly.
 Contact: Reach out for questions or concerns.`;
-  const testScores = {
-    "Transparency": 4,
-    "Data Sharing": 3,
-    "Reputability": 5,
-    "Past Behavior": 5,
-  };
+    let testScores = {
+      "Transparency": 4,
+      "Data Sharing": 3,
+      "Reputability": 5,
+      "Past Behavior": 5,
+    };
 
-  const handleClick = () => {
-    setLoading(true);
+    const docRef = doc(db, "webURL", currentUrl);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      // TODO: If domain already cached, fetch cached result. 
+      //console.log("Document data:", docSnap.data());
+      testSummary = (docSnap.data().summary);
+      testScores = (docSnap.data().scores);
+    } else {
+      // TODO: If domain not cached, get new result and store in cache 
+      // TODO: Add LLM/Score logic
+      console.log("No such document!");
+    }
     
-    // TODO: Add LLM/Score logic
-    // TODO: If domain already cached, fetch cached result. 
-    // TODO: If domain not cached, get new result and store in cache 
-
     // Testing logic with 3 second delay for now
     setTimeout(() => {
       setSummary(testSummary);
