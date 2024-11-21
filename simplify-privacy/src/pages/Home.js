@@ -1,3 +1,4 @@
+/*global chrome*/
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
 import { db } from '../firebase.config';
@@ -7,7 +8,21 @@ import React, { useRef, useEffect, useState } from 'react';
 
 function Home({setLoading, setSummary, setError, setScores}) {
   //const currentUrl = window.location.href; //TODO: Parse current URL
-  const currentUrl = "test2.com";
+  //const currentUrl = "test2.com";
+  const [currentURL, setURL] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      // see the note below on how to choose currentWindow or lastFocusedWindow
+      const [tab] = await chrome.tabs.query({active:true, lastFocusedWindow: true});
+      console.log(tab.url);
+      let text = tab.url
+      let index = text.indexOf("//");
+      let endIndex = text.indexOf("/", index+2);
+      let parsed = text.substring(index+2, endIndex);
+      setURL(parsed)
+    })();
+  }, []);
 
   async function handleClick () {
     setLoading(true);
@@ -28,7 +43,7 @@ Contact: Reach out for questions or concerns.`;
       "Past Behavior": 5,
     };
 
-    const docRef = doc(db, "webURL", currentUrl);
+    const docRef = doc(db, "webURL", currentURL);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
