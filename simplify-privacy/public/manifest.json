@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Simplify Privacy",
+  "name": "Simplify Privacy!",
   "version": "1.0",
   "description": "A Chrome extension to simplify privacy policies",
   "action": {
@@ -8,9 +8,5 @@
   },
   "permissions": [
     "activeTab"
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }
