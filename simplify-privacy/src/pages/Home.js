@@ -1,5 +1,8 @@
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
+import { auth, db } from '../../Firebase';
+import { collection, addDoc, setDoc, doc } from "firebase/firestore"; 
+import React, { useRef, useEffect, useState } from 'react';
 
 
 function Home({setLoading, setSummary, setError, setScores}) {
