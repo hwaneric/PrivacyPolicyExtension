@@ -1,10 +1,31 @@
+/*global chrome*/
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
+import { db } from '../firebase.config';
+import { setDoc, doc, getDoc } from "firebase/firestore"; 
+import React, { useEffect, useState } from 'react';
 
 
 function Home({setLoading, setSummary, setError, setScores}) {
+  const [currentURL, setURL] = useState(null);
 
-  const testSummary = `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
+  useEffect(() => {
+    (async () => {
+      // see the note below on how to choose currentWindow or lastFocusedWindow
+      const [tab] = await chrome.tabs.query({active:true, lastFocusedWindow: true});
+      console.log(tab.url);
+      let text = tab.url
+      let index = text.indexOf("//");
+      let endIndex = text.indexOf("/", index+2);
+      let parsed = text.substring(index+2, endIndex);
+      setURL(parsed)
+    })();
+  }, []);
+
+  async function handleClick () {
+    setLoading(true);
+
+    let testSummary = `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
 Usage: Data is used for services, transactions, communication, and analytics.
 Sharing: Shared only with trusted third parties or for legal compliance.
 Security: Measures are in place to protect your information.
@@ -13,28 +34,36 @@ Third Parties: Not responsible for external sites linked on the platform.
 Your Rights: Access, edit, or delete your data; opt-out of marketing.
 Updates: Policy changes take effect when posted; check regularly.
 Contact: Reach out for questions or concerns.`;
-  const testScores = {
-    "Transparency": 4,
-    "Data Sharing": 3,
-    "Reputability": 5,
-    "Past Behavior": 5,
-  };
+    let testScores = {
+      "Transparency": 4,
+      "Data Sharing": 3,
+      "Reputability": 5,
+      "Past Behavior": 5,
+    };
 
-  const handleClick = () => {
-    setLoading(true);
-    
-    // TODO: Add LLM/Score logic
-    // TODO: If domain already cached, fetch cached result. 
-    // TODO: If domain not cached, get new result and store in cache 
+    const docRef = doc(db, "webURL", currentURL);
+    const docSnap = await getDoc(docRef);
 
-    // Testing logic with 3 second delay for now
-    setTimeout(() => {
-      setSummary(testSummary);
-      setScores(testScores);
-      setLoading(false)
-    }, 3000)
+    if (docSnap.exists()) {
+      //console.log("Document data:", docSnap.data());
+      testSummary = (docSnap.data().summary);
+      testScores = (docSnap.data().scores);
+    } else {
+      // If domain not cached, get new result and store in cache 
+      // TODO: Add LLM/Score logic
 
-    // setLoading(false);
+      // Store new URL result
+      await setDoc(docRef, {
+        summary: testSummary,
+        scores: testScores,
+      });
+
+      console.log("No such document!");
+    }
+        
+    setSummary(testSummary);
+    setScores(testScores);
+    setLoading(false)
   }
  
   return (
