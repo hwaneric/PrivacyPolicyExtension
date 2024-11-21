@@ -6,8 +6,8 @@ import React, { useRef, useEffect, useState } from 'react';
 
 
 function Home({setLoading, setSummary, setError, setScores}) {
-  // const currentUrl = window.location.href; //TODO: Parse current URL
-  const currentUrl = "test";
+  //const currentUrl = window.location.href; //TODO: Parse current URL
+  const currentUrl = "test2.com";
 
   async function handleClick () {
     setLoading(true);
@@ -39,15 +39,22 @@ Contact: Reach out for questions or concerns.`;
     } else {
       // TODO: If domain not cached, get new result and store in cache 
       // TODO: Add LLM/Score logic
+
+      // Add a new document in collection "cities"
+      await setDoc(docRef, {
+        summary: testSummary,
+        scores: testScores,
+      });
+
       console.log("No such document!");
     }
     
     // Testing logic with 3 second delay for now
-    setTimeout(() => {
-      setSummary(testSummary);
-      setScores(testScores);
-      setLoading(false)
-    }, 3000)
+    
+    setSummary(testSummary);
+    setScores(testScores);
+    setLoading(false)
+
 
     // setLoading(false);
   }
