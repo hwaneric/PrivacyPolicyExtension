@@ -2,6 +2,7 @@
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
 import { stuff, mapReduce } from "../helpers/summarization";
+import { naiveRubric, mapReduceRubric } from "../helpers/rate-rubric";
 import { db } from '../firebase.config';
 import { setDoc, doc, getDoc } from "firebase/firestore"; 
 import React, { useEffect, useState } from 'react';
@@ -26,6 +27,7 @@ function Home({setLoading, setSummary, setError, setScores}) {
   async function handleClick () {
     setLoading(true);
 
+    // TODO: Get HTML text and replace 
     let testSummary = `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
 Usage: Data is used for services, transactions, communication, and analytics.
 Sharing: Shared only with trusted third parties or for legal compliance.
@@ -57,7 +59,20 @@ Contact: Reach out for questions or concerns.`;
       // const result = await stuff(testText);
       if (result.status === 200) {
         testSummary = result.summary;
-        testScores = testScores;
+        // testScores = testScores;
+        
+        console.log(result.summary);
+      }
+      else {
+        setError(true);
+        return;
+      }
+
+      const ratingResult = await mapReduceRubric(testText);
+      // const ratingResult = await naiveRubric(testText);
+      if (result.status === 200) {
+        testScores = ratingResult.ratings;
+        // testScores = testScores;
         
         console.log(result.summary);
       }
@@ -66,9 +81,6 @@ Contact: Reach out for questions or concerns.`;
         return;
       }
       
-      // TODO: Add LLM/Score logic
-      
-      // TODO: Integrate new result with caching
       // Store new URL result
       await setDoc(docRef, {
         summary: testSummary,
