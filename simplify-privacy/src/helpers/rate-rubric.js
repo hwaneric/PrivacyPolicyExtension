@@ -19,7 +19,9 @@ async function naiveRubric(text) {
       { role: "system", content: "You are a helpful assistant that rates privacy policies on the rubric we give you." },
       {
         role: "user",
-        content: `Here is our rubric: ${rubric}. Please rate the following privacy policy for each item in our rubric: ${text}`,
+        content: `Here is a rubric: ${rubric}. We would like you to rate a privacy policy for 
+        each item in our rubric. Please return a JSON object with each rubric item as a key 
+        and the rating as the value. Here is the privayc policy: ${text}`,
       },
     ],
     temperature: 0.7,
@@ -67,7 +69,9 @@ async function mapReduceRubric(text) {
 
     const res = await chain.invoke({
       input_documents: docs,
-      question: `Please rate the input document (which is a privacy policy) on the rubric we give you. Here is our rubric: ${rubric}.`,
+      question: `Please rate the input document (which is a privacy policy) on the rubric we give you. 
+      Here is our rubric: ${rubric}. For each rubric item, please give the privacy policy an integer rating.
+      Please return a JSON object with each rubric item as a key and the rating as the value.`,
     });
 
     return {"status": 200, "ratings": res.text}
