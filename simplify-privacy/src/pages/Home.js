@@ -1,6 +1,7 @@
 /*global chrome*/
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
+import { stuff, mapReduce } from "../helpers/summarization";
 import { db } from '../firebase.config';
 import { setDoc, doc, getDoc } from "firebase/firestore"; 
 import React, { useEffect, useState } from 'react';
@@ -48,10 +49,26 @@ Contact: Reach out for questions or concerns.`;
       //console.log("Document data:", docSnap.data());
       testSummary = (docSnap.data().summary);
       testScores = (docSnap.data().scores);
+      
     } else {
       // If domain not cached, get new result and store in cache 
+      
+      const result = await mapReduce(testText);
+      // const result = await stuff(testText);
+      if (result.status === 200) {
+        testSummary = result.summary;
+        testScores = testScores;
+        
+        console.log(result.summary);
+      }
+      else {
+        setError(true);
+        return;
+      }
+      
       // TODO: Add LLM/Score logic
-
+      
+      // TODO: Integrate new result with caching
       // Store new URL result
       await setDoc(docRef, {
         summary: testSummary,
@@ -68,7 +85,7 @@ Contact: Reach out for questions or concerns.`;
  
   return (
     <>
-      {/* Insert Top Image here */}
+      {/* Insert Image here */}
       <H4 className="text-center"> Simplify Privacy Policies with One Click!</H4>
       <Button 
         variant="contained" 
