@@ -1,17 +1,10 @@
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
-import OpenAI from "openai";
 import { stuff, mapReduce } from "../helpers/summarization";
 
 
 
 function Home({setLoading, setSummary, setError, setScores}) {
-  // const secrets = require('../env.json');
-
-  // const openai = new OpenAI();
-  // const OPENAI_API_KEY = secrets.OPENAI_API_KEY;
-  
-
   const testText = 
     `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
     Usage: Data is used for services, transactions, communication, and analytics.
@@ -31,8 +24,12 @@ function Home({setLoading, setSummary, setError, setScores}) {
 
   const handleClick = async () => {
     setLoading(true);
+
+    // TODO: Add LLM/Score logic
+    // TODO: If domain already cached, fetch cached result. 
+    // TODO: If domain not cached, get new result and store in cache 
     const result = await mapReduce(testText);
-    // const result = await stuff();
+    // const result = await stuff(testText);
     if (result.status === 200) {
       setSummary(result.summary);
       console.log(result.summary);
@@ -42,15 +39,11 @@ function Home({setLoading, setSummary, setError, setScores}) {
     else {
       setError(true);
     }
-
-    // TODO: Add LLM/Score logic
-    // TODO: If domain already cached, fetch cached result. 
-    // TODO: If domain not cached, get new result and store in cache 
   }
  
   return (
     <>
-      {/* Insert Top Image here */}
+      {/* Insert Image here */}
       <H4 className="text-center"> Simplify Privacy Policies with One Click!</H4>
       <Button 
         variant="contained" 
