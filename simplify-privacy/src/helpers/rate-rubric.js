@@ -120,13 +120,13 @@ async function mapReduceRubric(text) {
     const docs = await textSplitter.createDocuments([text]);
     // alert(JSON.stringify(docs[0]))
     // for (let doc in docs){
-    for (let i = 0; i < docs.length; i++) { 
+    // for (let i = 0; i < docs.length; i++) { 
       
-      alert((JSON.stringify(docs[i]).length))
-      alert(JSON.stringify(docs[i]))
-    }
+    //   alert((JSON.stringify(docs[i]).length))
+    //   alert(JSON.stringify(docs[i]))
+    // }
       
-    throw new Error(`STOP ${docs}`);
+    // throw new Error(`STOP ${docs}`);
     const chain = loadQAChain(model, { 
       type: "map_reduce",
       returnIntermediateSteps: true,
@@ -138,13 +138,13 @@ async function mapReduceRubric(text) {
       input_documents: docs,
       question: `Please rate the input document (which is a privacy policy) on each item in the rubric we give you. 
       Here is our rubric: ${rubric}. Please return the output as a JSON object with each rubric item as a key
-      and the rating as the value, and with no additional text.`,
+      and the rating as an integer value, and with no additional text.`,
       // response_format:{ "type": "json_object" }, //check if this response format works
     });
-    console.log({ res });
+    // alert({ res });
     // alert({res});
     // alert(JSON.stringify(res.text));
-    alert(res.text)
+    // alert(res.text)
 
     return {"status": 200, "ratings": res.text}
   } catch (error) {

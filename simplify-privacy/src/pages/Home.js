@@ -138,24 +138,24 @@ Contact: Reach out for questions or concerns.`;
     } else {
       // If domain not cached, get new result and store in cache 
       
-      // const result = await mapReduce(testText);
-      // // const result = await stuff(testText);
-      // if (result.status === 200) {
-      //   testSummary = result.summary;
-      //   // testScores = testScores;
+      const result = await mapReduce(testText);
+      // const result = await stuff(testText);
+      if (result.status === 200) {
+        testSummary = result.summary;
+        // testScores = testScores;
         
-      //   console.log(result.summary);
-      // }
-      // else {
-      //   setError(true);
-      //   return;
-      // }
+        console.log(result.summary);
+      }
+      else {
+        setError(true);
+        return;
+      }
 
-      const ratingResult = await mapReduceRubric(testText);
+      const ratingResult = await mapReduceRubric(testSummary);  //PRIN change to actual text
       // const ratingResult = await naiveRubric(testText); //change to actual text
       if (ratingResult.status === 200) {
         testScores = JSON.parse(ratingResult.ratings);
-        alert(JSON.stringify(testScores));
+        // alert(JSON.stringify(testScores));
         
       }
       else {
