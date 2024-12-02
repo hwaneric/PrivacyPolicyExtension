@@ -13,9 +13,10 @@ function Result({summary, scores}) {
         <div className="flex flex-row gap-8 items-center">
           <H2 className="text-center"> {overallScore} </H2>
           <div className="flex flex-col">
-            {Object.entries(scores).map(([category, score]) => (
+            {scores}
+            {/* {Object.entries(scores).map(([category, score]) => (
               <P key={category}> {category}: {score} </P>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>
