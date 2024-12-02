@@ -1,19 +1,11 @@
 import { OpenAI } from "@langchain/openai";
 import { loadQAChain } from "langchain/chains";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { RecursiveCharacterTextSplitter, HTMLHeaderTextSplitter } from "langchain/text_splitter";
 
 const secrets = require('../env.json');
 const OPENAI_API_KEY = secrets.OPENAI_API_KEY;
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-// const rubric = JSON.stringify({
-//   "Collection Transparency": {
-//     "1": "Company does not have a section on how they collect data. Company does not provide any information on the type of data they are collecting or the sources of their data.",
-//     "2": "If the company is collecting data, the company has a section on how they collect data but the policy is incomplete. The company tells users that they are collecting user data but does not provide any additional information.",
-//     "3": "If the company is collecting data, the company vaguely informs users of the ways they are collecting data. They broadly list the internal and external data sources they are using. They broadly list categories of information they are collecting.",
-//     "4": "If the company is collecting user data, company specifies the types of personal data they are collecting. The company does not justify why they are collecting certain pieces of data.",
-//     "5": "If the company is collecting user data, the company is extremely explicit in the types of personal data they are collecting. The company also provides justification for why they need to collect each piece of data."
-//   }
-// });
+
 const rubric = JSON.stringify({
     "Collection Transparency": {
       "1": "Company does not have a section on how they collect data. Company does not provide any information on the type of data they are collecting or the sources of their data.",
@@ -57,14 +49,13 @@ const rubric = JSON.stringify({
       "3": "Company's privacy policy is easy to comprehend. Company provides additional resources at the company for users to reach out to."
     }
   });
-// TODO: Write how API should output ratings 
 
 // Naive summarization strategy
 async function naiveRubric(text) {
 
   // Request payload
   const data = {
-    model: "gpt-4", 
+    model: "gpt-4o", //PRIN CHANGE BACK 
     messages: [
       { role: "system", content: "You are a helpful assistant that rates privacy policies on the rubric we give you." },
       {
@@ -74,7 +65,6 @@ async function naiveRubric(text) {
         and the rating as the value, and with no additional text. Here is the privacy policy: ${text}`,
       },
     ],
-    // response_format:{ "type": "json_object" },
     temperature: 0.7,
   };
 
@@ -96,8 +86,8 @@ async function naiveRubric(text) {
     }
 
     const completion = await response.json();
-    alert(completion)
-    alert(completion.choices[0].message.content)
+    // alert(completion)
+    // alert(completion.choices[0].message.content)
     return {"status": 200, "ratings": completion.choices[0].message.content}
     
   } catch (error) {
@@ -109,29 +99,52 @@ async function naiveRubric(text) {
 
 // MapReduce (aka chunking) summarization strategy
 async function mapReduceRubric(text) {
+  // alert(text) //URL
+
   const model = new OpenAI({ 
     temperature: 0.7,
     apiKey: OPENAI_API_KEY,
   });
-  const textSplitter = new RecursiveCharacterTextSplitter({ 
+  const textSplitter = new RecursiveCharacterTextSplitter(
+  {
+    separators:[
+      "\n\n",
+      "\n",
+      " ",
+      ".",
+      ",",
+  ], 
     chunkSize: 1000,
   });
   try {
     const docs = await textSplitter.createDocuments([text]);
+    // alert(JSON.stringify(docs[0]))
+    // for (let doc in docs){
+    for (let i = 0; i < docs.length; i++) { 
+      
+      alert((JSON.stringify(docs[i]).length))
+      alert(JSON.stringify(docs[i]))
+    }
+      
+    throw new Error(`STOP ${docs}`);
     const chain = loadQAChain(model, { 
       type: "map_reduce",
       returnIntermediateSteps: true,
     });
 
+    alert("Map reduce: Sending request to OpenAI...");
+
     const res = await chain.invoke({
       input_documents: docs,
-      question: `Please rate the input document (which is a privacy policy) on the rubric we give you. 
-      Here is our rubric: ${rubric}. For each rubric item, please give the privacy policy an integer rating.
-      Please return the output as a JSON object with each rubric item as a key and the rating as the value, 
-      and with no additional text.`,
-      response_format:{ "type": "json_object" },
+      question: `Please rate the input document (which is a privacy policy) on each item in the rubric we give you. 
+      Here is our rubric: ${rubric}. Please return the output as a JSON object with each rubric item as a key
+      and the rating as the value, and with no additional text.`,
+      // response_format:{ "type": "json_object" }, //check if this response format works
     });
     console.log({ res });
+    // alert({res});
+    // alert(JSON.stringify(res.text));
+    alert(res.text)
 
     return {"status": 200, "ratings": res.text}
   } catch (error) {
