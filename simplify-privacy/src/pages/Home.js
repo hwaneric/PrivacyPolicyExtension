@@ -151,7 +151,7 @@ Contact: Reach out for questions or concerns.`;
         return;
       }
 
-      const ratingResult = await mapReduceRubric(testSummary);  //PRIN change to actual text
+      const ratingResult = await mapReduceRubric(testText);  //PRIN change to actual text
       // const ratingResult = await naiveRubric(testText); //change to actual text
       if (ratingResult.status === 200) {
         testScores = JSON.parse(ratingResult.ratings);
