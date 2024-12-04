@@ -42,6 +42,11 @@ const rubric = JSON.stringify({
       "1": "Company does not inform the user how it is retaining their data. Company does not inform the user of how it is storing and securing the user's data.",
       "2": "Company minimally informs the user how it is retaining their data but does not provide justification on why they are doing so. Company informs the user of how it is storing and securing the user's data.",
       "3": "Company informs user on how it is retaining their data and explicitly justifies why they need to retain it. Company informs the user of how it is storing and securing the user's data and informs the user that they regularly update and comply with legal requirements."
+    },
+    "Readability and Accessibility": {
+      "1": "Company's privacy policy is incomprehensible. Company does not provide any additional resources at the company for users to reach out to.",
+      "2": "Company's privacy policy is full of complicated legal language. Company provides minimal additional resources at the company for users to reach out to.",
+      "3": "Company's privacy policy is easy to comprehend. Company provides additional resources at the company for users to reach out to."
     }
   });
 
