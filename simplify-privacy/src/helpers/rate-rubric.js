@@ -1,4 +1,4 @@
-import { OpenAI } from "@langchain/openai";
+import { ChatOpenAI, OpenAI } from "@langchain/openai";
 import { loadQAChain } from "langchain/chains";
 import { RecursiveCharacterTextSplitter, HTMLHeaderTextSplitter } from "langchain/text_splitter";
 
@@ -100,10 +100,11 @@ async function naiveRubric(text) {
 // MapReduce (aka chunking) summarization strategy
 async function mapReduceRubric(text) {
   // alert(text) //URL
-
-  const model = new OpenAI({ 
+  alert("here")
+  const model = new ChatOpenAI({ 
     temperature: 0.7,
     apiKey: OPENAI_API_KEY,
+    model: 'gpt-4',
   });
   const textSplitter = new RecursiveCharacterTextSplitter(
   {
@@ -114,12 +115,11 @@ async function mapReduceRubric(text) {
       ".",
       ",",
   ], 
-    chunkSize: 1000,
+    chunkSize: 1000, 
   });
   try {
     const docs = await textSplitter.createDocuments([text]);
     // alert(JSON.stringify(docs[0]))
-    // for (let doc in docs){
     // for (let i = 0; i < docs.length; i++) { 
       
     //   alert((JSON.stringify(docs[i]).length))
@@ -130,20 +130,22 @@ async function mapReduceRubric(text) {
     const chain = loadQAChain(model, { 
       type: "map_reduce",
       returnIntermediateSteps: true,
+      // maxTokens:3000,
     });
 
     alert("Map reduce: Sending request to OpenAI...");
-
+    
     const res = await chain.invoke({
       input_documents: docs,
-      question: `Please rate the input document (which is a privacy policy) on each item in the rubric we give you. 
-      Here is our rubric: ${rubric}. Please return the output as a JSON object with each rubric item as a key
-      and the rating as an integer value, and with no additional text.`,
+      question: `Here is a rubric: ${rubric}. We would like you to rate the input_document (whcih is a privacy policy) 
+        on each item in our rubric. Please return the output as a JSON object with each rubric title as the key 
+        and an integer rating as the value, and with no additional text.`,
       // response_format:{ "type": "json_object" }, //check if this response format works
     });
-    // alert({ res });
+    alert({ res });
+    alert(res.text)
     // alert({res});
-    // alert(JSON.stringify(res.text));
+    alert(JSON.stringify(res.text));
     // alert(res.text)
 
     return {"status": 200, "ratings": res.text}
