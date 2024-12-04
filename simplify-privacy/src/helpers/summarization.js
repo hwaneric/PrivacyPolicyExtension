@@ -59,6 +59,7 @@ async function mapReduce(text) {
     chunkSize: 1000,
     // chunkOverlap: 20,
   });
+  alert("Starting summary")
   try {
     const docs = await textSplitter.createDocuments([text]);
     const chain = loadSummarizationChain(model, { 
@@ -69,6 +70,8 @@ async function mapReduce(text) {
     const res = await chain.invoke({
       input_documents: docs,
     });
+
+    alert('Finished summary')
 
     // console.log({ res });
     // console.log("intermediary steps:", res.intermediateSteps)

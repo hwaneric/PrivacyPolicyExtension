@@ -42,34 +42,32 @@ const rubric = JSON.stringify({
       "1": "Company does not inform the user how it is retaining their data. Company does not inform the user of how it is storing and securing the user's data.",
       "2": "Company minimally informs the user how it is retaining their data but does not provide justification on why they are doing so. Company informs the user of how it is storing and securing the user's data.",
       "3": "Company informs user on how it is retaining their data and explicitly justifies why they need to retain it. Company informs the user of how it is storing and securing the user's data and informs the user that they regularly update and comply with legal requirements."
-    },
-    "Readability and Accessibility": {
-      "1": "Company's privacy policy is incomprehensible. Company does not provide any additional resources at the company for users to reach out to.",
-      "2": "Company's privacy policy is full of complicated legal language. Company provides minimal additional resources at the company for users to reach out to.",
-      "3": "Company's privacy policy is easy to comprehend. Company provides additional resources at the company for users to reach out to."
     }
   });
 
 // Naive summarization strategy
 async function naiveRubric(text) {
+  // alert("Using naive rubric...");
+  // alert(text)
+
+  const content = `You are a helpful assistant that rates privacy policies on this rubric: ${rubric}. 
+        Please return the output as a JSON object literal with each rubric item as a key 
+        and the rating as the value, and with no additional text. Do not wrap the json codes in JSON markers.`;
 
   // Request payload
   const data = {
-    model: "gpt-4o", //PRIN CHANGE BACK 
+    model: "gpt-4", //PRIN CHANGE BACK 
     messages: [
-      { role: "system", content: "You are a helpful assistant that rates privacy policies on the rubric we give you." },
+      { role: "system", content: content,},
       {
         role: "user",
-        content: `Here is a rubric: ${rubric}. We would like you to rate a privacy policy for 
-        each item in our rubric. Please return the output as a JSON object with each rubric item as a key 
-        and the rating as the value, and with no additional text. Here is the privacy policy: ${text}`,
+        content: `This is the privacy policy: ${text}`,
       },
     ],
     temperature: 0.7,
   };
 
   alert("Sending request to OpenAI...");
-  // throw new Error(`data: ${data.messages[1].content}`);
 
   // Make the POST request
   try {
@@ -87,7 +85,8 @@ async function naiveRubric(text) {
 
     const completion = await response.json();
     // alert(completion)
-    // alert(completion.choices[0].message.content)
+    // alert(JSON.stringify(completion.choices[0].message.content))
+    // alert((completion.choices[0].message.content))
     return {"status": 200, "ratings": completion.choices[0].message.content}
     
   } catch (error) {
