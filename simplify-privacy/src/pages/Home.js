@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 
 function Home({setLoading, setSummary, setError, setScores}) {
   const [currentURL, setURL] = useState(null);
+  const [html, setHtml] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -21,6 +22,91 @@ function Home({setLoading, setSummary, setError, setScores}) {
       let endIndex = text.indexOf("/", index+2);
       let parsed = text.substring(index+2, endIndex);
       setURL(parsed)
+      alert("test")
+
+      // chrome.tabs.executeScript(
+      //   tab.id, 
+      //   { code: `(async function() { 
+      //       // Do lots of things with await
+      //       let result = true;
+      //       var html = document.documentElement.outerHTML; 
+      //       chrome.runtime.sendMessage({action: "getSource", source: html});
+            
+      //       });
+      //   })()` }, 
+      //   async emptyPromise => {
+    
+      //       // Create a promise that resolves when chrome.runtime.onMessage fires
+      //       const message = new Promise(resolve => {
+      //           const listener = request => {
+      //               alert("listener called")
+      //               chrome.runtime.onMessage.removeListener(listener);
+      //               resolve(request);
+      //           };
+      //           chrome.runtime.onMessage.addListener(listener);
+      //       });
+    
+      //       const result = await message;
+      //       alert("promise resolved")
+      //       console.log(result); // Logs true
+      //   }); 
+
+      // await chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
+      //   chrome.tabs.executeScript(
+      //       tabs[0].id,
+      //       { code: 'var html = document.documentElement.outerHTML; chrome.runtime.sendMessage({action: "getSource", source: html});' }
+      //   );
+      // });
+
+      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === "getSource") {
+          console.log("HTML Source:", message.source);
+          setHtml(message.source)
+          alert(message.source)
+          // Do something with the HTML (e.g., process it or save it)
+        }
+      });
+
+      function getScript() {
+        const html = document.documentElement.outerHTML; // Get all HTML
+        chrome.runtime.sendMessage({ action: "getSource", source: html }); // Send HTML to the background script
+      };
+
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.scripting.executeScript(
+          {
+            target: { tabId: tabs[0].id },
+            func : getScript,
+            // files: ["../src/helpers/htmlScript.js"], // Inject the script
+          },
+          () => {
+            // alert("Content script injected!");
+            console.log("Content script injected!");
+          }
+        );
+      });
+
+    //   chrome.runtime.onMessage.addListener(function(request, sender) {
+    //     if (request.action == "getSource") {
+    //         var html = request.source;
+    //         // var html = this.pageSource.match(/<title[^>]*>([^<]+)<\/title>/)[1];
+    //         alert(html)
+    //         setHtml(html)
+    //     }
+    // });
+
+    // chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    //     chrome.scripting.executeScript(
+    //         tabs[0].id,
+    //         { code: 'var html = document.documentElement.outerHTML; alert("hello"); chrome.runtime.sendMessage({action: "getSource", source: html});' }
+    //     );
+    // });
+      // alert(html)
+      // const allHTML = document.documentElement.outerHTML;
+      // setHtml(allHTML);
+      // const innerHTML = document.documentElement.innerHTML;
+      // alert(innerHTML)
+      // alert(allHTML)
     })();
   }, []);
 
@@ -124,8 +210,8 @@ If you are a consumer under the CCPA and wish to contact us through an authorize
       
     } else {
       // If domain not cached, get new result and store in cache 
-      const result = await mapReduce(text);
-
+      
+      const result = await mapReduce(html);
       // const result = await stuff(testText);
       if (result.status === 200) {
         summary = result.summary;        

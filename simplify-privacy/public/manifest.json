@@ -7,6 +7,6 @@
     "default_popup": "index.html"
   },
   "permissions": [
-    "activeTab"
+    "activeTab", "scripting"
   ]
 }
