@@ -11,12 +11,12 @@ function Result({summary, scores}) {
       <div className="my-4">
         <H4 className="text-center underline"> Privacy Score </H4>
         <div className="flex flex-row gap-8 items-center">
-          <H2 className="text-center"> {overallScore} </H2>
+          <H2 className="text-center"> {overallScore.toFixed(1)} </H2>
           <div className="flex flex-col">
             {/* <P className="mx-4"> {scores} </P> */}
-            {/* {Object.entries(scores).map(([category, score]) => (
+            {Object.entries(scores).map(([category, score]) => (
               <P key={category}> {category}: {score} </P>
-            ))} */}
+            ))}
           </div>
         </div>
       </div>
