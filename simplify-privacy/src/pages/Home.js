@@ -6,9 +6,10 @@ import { naiveRubric, mapReduceRubric } from "../helpers/rate-rubric";
 import { db } from '../firebase.config';
 import { setDoc, doc, getDoc } from "firebase/firestore"; 
 import React, { useEffect, useState } from 'react';
+import logo from '../assets/logo.png';
 
 
-function Home({setLoading, setSummary, setError, setScores}) {
+function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
   const [currentURL, setURL] = useState(null);
 
   useEffect(() => {
@@ -132,7 +133,8 @@ If you are a consumer under the CCPA and wish to contact us through an authorize
         console.log(result.summary);
       }
       else {
-        setError(true);
+        setErrorName(result.error_name);
+        setErrorMsg(result.error_msg);
         return;
       }
 
@@ -142,7 +144,8 @@ If you are a consumer under the CCPA and wish to contact us through an authorize
         scores = JSON.parse(ratingResult.ratings);
       }
       else {
-        setError(true);
+        setErrorName(ratingResult.error_name);
+        setErrorMsg(ratingResult.error_msg);
         return;
       }
       
@@ -161,6 +164,7 @@ If you are a consumer under the CCPA and wish to contact us through an authorize
   return (
     <>
       {/* Insert Image here */}
+      <img src={logo} alt="Logo" />;
       <H4 className="text-center"> Simplify Privacy Policies with One Click!</H4>
       <Button 
         variant="contained" 

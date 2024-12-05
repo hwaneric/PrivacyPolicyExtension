@@ -93,7 +93,7 @@ async function naiveRubric(text) {
     
   } catch (error) {
     console.error("Error:", error);
-    return  {"status": 400, "error_msg": "PLACEHOLDER"}
+    return  {"status": 400, "error_name": error.name, "error_msg": error.message}
 
   }
 }
@@ -153,7 +153,7 @@ async function mapReduceRubric(text) {
     return {"status": 200, "ratings": res.text.replace(/^```json\s*|\s*```$/g, '')} // Remove code block markdown
   } catch (error) {
     console.error(error);
-    return {"status": 400, "error_msg": "PLACEHOLDER"}
+    return {"status": 400, "error_name": error.name, "error_msg": error.message}
   }
 }
 

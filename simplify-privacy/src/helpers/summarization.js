@@ -44,7 +44,7 @@ async function stuff(text) {
     
   } catch (error) {
     console.error("Error:", error);
-    return  {"status": 400, "error_msg": "PLACEHOLDER"}
+    return  {"status": 400, "error_name": error.name, "error_msg": error.message}
 
   }
 }
@@ -66,7 +66,7 @@ async function mapReduce(text) {
     chunkSize: 1000,
     // chunkOverlap: 20,
   });
-  
+
   try {
     const docs = await textSplitter.createDocuments([text]);
     const chain = loadSummarizationChain(model, { 
@@ -78,12 +78,10 @@ async function mapReduce(text) {
       input_documents: docs,
     });
 
-    // console.log({ res });
-    // console.log("intermediary steps:", res.intermediateSteps)
     return {"status": 200, "summary": res.text}
   } catch (error) {
     console.error(error);
-    return {"status": 400, "error_msg": "PLACEHOLDER"}
+    return {"status": 400, "error_name": error.name, "error_msg": error.message}
   }
 }
 
