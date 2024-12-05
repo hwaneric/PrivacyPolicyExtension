@@ -28,7 +28,7 @@ function Home({setLoading, setSummary, setError, setScores}) {
     setLoading(true);
 
     // TODO: Get HTML text and replace 
-    let testText = `Terms of Use and Privacy Statement
+    let text = `Terms of Use and Privacy Statement
 Welcome to the Netflix in Your Neighbourhood (“Experience”)! This Terms of Use and Privacy Statement document (“Terms”) explains our Terms of Use and Privacy Statement for this Experience.
 
 You must be at least 18 years of age to interact with this Experience. The Experience, its contents, and its services (the “Experience”) are for entertainment purposes only. This Experience is brought to you by Netflix, Inc. For questions about our privacy practices, this Experience, or these Terms, please contact us by email at experience@netflix.com. Please include the name of the Experience if you contact us.
@@ -110,40 +110,25 @@ You have a right not to receive discriminatory treatment for exercising any of y
 You can assert these rights only where we receive a verified request from you. For information on how to exercise your rights, please see the Your Information and Rights section of these Terms.
 
 If you are a consumer under the CCPA and wish to contact us through an authorized agent, the authorized agent can submit a request on your behalf at experience@netflix.com along with a statement signed by you certifying that the agent is authorized to act on your behalf. In order to verify the request and your identity, we may ask you to verify your identity. Because we only collect limited information about individuals, we may be unable to verify requests to the standard required by the CCPA.`
-
-    let testSummary = `Data Collection: Personal details (e.g., name, email) and non-personal data (e.g., device info) are collected for services and improvements.
-Usage: Data is used for services, transactions, communication, and analytics.
-Sharing: Shared only with trusted third parties or for legal compliance.
-Security: Measures are in place to protect your information.
-Cookies: Used for functionality and personalization; users can manage settings.
-Third Parties: Not responsible for external sites linked on the platform.
-Your Rights: Access, edit, or delete your data; opt-out of marketing.
-Updates: Policy changes take effect when posted; check regularly.
-Contact: Reach out for questions or concerns.`;
-    let testScores = {
-      "Transparency": 4,
-      "Data Sharing": 3,
-      "Reputability": 5,
-      "Past Behavior": 5,
-    };
+    let summary = "";
+    let scores = {};
 
     const docRef = doc(db, "webURL", currentURL);
     const docSnap = await getDoc(docRef);
 
+    // Domain is Cached
     if (docSnap.exists()) {
       //console.log("Document data:", docSnap.data());
-      testSummary = (docSnap.data().summary);
-      testScores = (docSnap.data().scores);
+      summary = (docSnap.data().summary);
+      scores = (docSnap.data().scores);
       
     } else {
       // If domain not cached, get new result and store in cache 
-      
-      const result = await mapReduce(testText);
+      const result = await mapReduce(text);
+
       // const result = await stuff(testText);
       if (result.status === 200) {
-        testSummary = result.summary;
-        // testScores = testScores;
-        
+        summary = result.summary;        
         console.log(result.summary);
       }
       else {
@@ -151,12 +136,10 @@ Contact: Reach out for questions or concerns.`;
         return;
       }
 
-      const ratingResult = await mapReduceRubric(testSummary);  //PRIN change to actual text
+      const ratingResult = await mapReduceRubric(text);  //PRIN change to actual text
       // const ratingResult = await naiveRubric(testText); //change to actual text
       if (ratingResult.status === 200) {
-        testScores = JSON.parse(ratingResult.ratings);
-        // alert(JSON.stringify(testScores));
-        
+        scores = JSON.parse(ratingResult.ratings);
       }
       else {
         setError(true);
@@ -165,15 +148,13 @@ Contact: Reach out for questions or concerns.`;
       
       // Store new URL result
       await setDoc(docRef, {
-        summary: testSummary,
-        scores: testScores,
+        summary: summary,
+        scores: scores,
       });
-
-      console.log("No such document!");
     }
         
-    setSummary(testSummary);
-    setScores(testScores);
+    setSummary(summary);
+    setScores(scores);
     setLoading(false)
   }
  

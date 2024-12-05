@@ -1,4 +1,5 @@
-import { OpenAI } from "@langchain/openai";
+import { OpenAI, ChatOpenAI } from "@langchain/openai";
+
 import { loadQAChain } from "langchain/chains";
 import { RecursiveCharacterTextSplitter, HTMLHeaderTextSplitter } from "langchain/text_splitter";
 
@@ -99,12 +100,27 @@ async function naiveRubric(text) {
 
 // MapReduce (aka chunking) summarization strategy
 async function mapReduceRubric(text) {
-  // alert(text) //URL
 
-  const model = new OpenAI({ 
+  // const mapModel = new OpenAI({ 
+  //   temperature: 0.7,
+  //   apiKey: OPENAI_API_KEY,
+  //   verbose: true,
+  // });
+  const mapModel = new ChatOpenAI({
+    model: "gpt-4o-mini",
     temperature: 0.7,
     apiKey: OPENAI_API_KEY,
-  });
+    verbose: true,
+  })
+
+  const combineModel = new ChatOpenAI({
+    // model: "gpt-4o-mini",
+    model: "gpt-4o",
+    temperature: 0.7,
+    apiKey: OPENAI_API_KEY,
+    verbose: true,
+  })
+
   const textSplitter = new RecursiveCharacterTextSplitter(
   {
     separators:[
@@ -118,35 +134,23 @@ async function mapReduceRubric(text) {
   });
   try {
     const docs = await textSplitter.createDocuments([text]);
-    // alert(JSON.stringify(docs[0]))
-    // for (let doc in docs){
-    // for (let i = 0; i < docs.length; i++) { 
-      
-    //   alert((JSON.stringify(docs[i]).length))
-    //   alert(JSON.stringify(docs[i]))
-    // }
-      
-    // throw new Error(`STOP ${docs}`);
-    const chain = loadQAChain(model, { 
+    console.log("number of documents:", docs.length);
+    
+    const chain = loadQAChain(mapModel, { 
       type: "map_reduce",
+      combineLLM: combineModel,
       returnIntermediateSteps: true,
     });
-
-    alert("Map reduce: Sending request to OpenAI...");
 
     const res = await chain.invoke({
       input_documents: docs,
       question: `Please rate the input document (which is a privacy policy) on each item in the rubric we give you. 
       Here is our rubric: ${rubric}. Please return the output as a JSON object with each rubric item as a key
       and the rating as an integer value, and with no additional text.`,
-      // response_format:{ "type": "json_object" }, //check if this response format works
     });
-    // alert({ res });
-    // alert({res});
-    // alert(JSON.stringify(res.text));
-    // alert(res.text)
-
-    return {"status": 200, "ratings": res.text}
+    
+    // console.log("FINAL: ", res.text)
+    return {"status": 200, "ratings": res.text.replace(/^```json\s*|\s*```$/g, '')} // Remove code block markdown
   } catch (error) {
     console.error(error);
     return {"status": 400, "error_msg": "PLACEHOLDER"}
