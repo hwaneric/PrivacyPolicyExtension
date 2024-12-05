@@ -138,7 +138,7 @@ If you are a consumer under the CCPA and wish to contact us through an authorize
         return;
       }
 
-      const ratingResult = await mapReduceRubric(text);  //PRIN change to actual text
+      const ratingResult = await mapReduceRubric(html);  //PRIN change to actual text
       // const ratingResult = await naiveRubric(testText); //change to actual text
       if (ratingResult.status === 200) {
         scores = JSON.parse(ratingResult.ratings);
