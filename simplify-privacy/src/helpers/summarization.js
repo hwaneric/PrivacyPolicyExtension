@@ -1,4 +1,4 @@
-import { OpenAI } from "@langchain/openai";
+import { ChatOpenAI } from "@langchain/openai";
 import { loadSummarizationChain } from "langchain/chains";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
@@ -51,14 +51,22 @@ async function stuff(text) {
 
 // MapReduce (aka chunking) summarization strategy
 async function mapReduce(text) {
-  const model = new OpenAI({ 
+  // const model = new OpenAI({ 
+  //   temperature: 0.7,
+  //   apiKey: OPENAI_API_KEY,
+  // });
+  const model = new ChatOpenAI({
+    model: "gpt-4o-mini",
     temperature: 0.7,
     apiKey: OPENAI_API_KEY,
+    verbose: true,
   });
+
   const textSplitter = new RecursiveCharacterTextSplitter({ 
     chunkSize: 1000,
     // chunkOverlap: 20,
   });
+  
   try {
     const docs = await textSplitter.createDocuments([text]);
     const chain = loadSummarizationChain(model, { 
