@@ -63,7 +63,7 @@ async function mapReduce(text) {
   });
 
   const textSplitter = new RecursiveCharacterTextSplitter({ 
-    chunkSize: 1000,
+    chunkSize: 5000,
     // chunkOverlap: 20,
   });
 

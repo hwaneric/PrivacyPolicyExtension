@@ -130,7 +130,7 @@ async function mapReduceRubric(text) {
       ".",
       ",",
   ], 
-    chunkSize: 1000,
+    chunkSize: 5000,
   });
   try {
     const docs = await textSplitter.createDocuments([text]);
