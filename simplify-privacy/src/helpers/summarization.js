@@ -73,7 +73,7 @@ async function mapReduce(text) {
     let docs = await textSplitter.createDocuments([text]);
 
     if (docs.length > 50) {
-      alert("large doc, previous size: " + docs.length);
+      // alert("large doc, previous size: " + docs.length);
       textSplitter = new RecursiveCharacterTextSplitter({ 
         chunkSize: 50000,
         // chunkOverlap: 20,
@@ -82,7 +82,7 @@ async function mapReduce(text) {
       smallDoc = false;
       
     }
-    alert(`docs length: ${docs.length}`);
+    // alert(`docs length: ${docs.length}`);
     const chain = loadSummarizationChain(model, { 
       type: "map_reduce",
       returnIntermediateSteps: true,

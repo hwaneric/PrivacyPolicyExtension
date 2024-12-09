@@ -80,13 +80,8 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
         setErrorMsg(result.error_msg);
         return;
       }
-      alert(summary);
+      // alert(summary);
 
-      // Store new URL result
-      // await setDoc(docRef, {
-      //   summary: summary
-      // });
-      // throw new Error(`STOP`);
       let ratingResult;
 
       if (result.isSmall) {

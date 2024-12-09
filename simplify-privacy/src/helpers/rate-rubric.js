@@ -53,7 +53,7 @@ const rubric = JSON.stringify({
 
 // Naive summarization strategy
 async function naiveRubric(text) {
-  alert("Using naive summarization strategy...");
+  // alert("Using naive summarization strategy...");
 
   // Request payload
   const data = {
@@ -70,7 +70,7 @@ async function naiveRubric(text) {
     temperature: 0.7,
   };
 
-  alert("Sending request to OpenAI...");
+  // alert("Sending request to OpenAI...");
   // throw new Error(`data: ${data.messages[1].content}`);
 
   // Make the POST request
@@ -89,8 +89,8 @@ async function naiveRubric(text) {
 
     const completion = await response.json();
     // alert(completion)
-    alert(completion.choices[0].message.content)
-    alert(completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, ''))
+    // alert(completion.choices[0].message.content)
+    // alert(completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, ''))
     return {"status": 200, "ratings": completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, '')}
     
   } catch (error) {
