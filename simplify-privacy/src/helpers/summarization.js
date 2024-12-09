@@ -1,4 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
+import { listItemTextClasses } from "@mui/material";
 import { loadSummarizationChain } from "langchain/chains";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
@@ -62,13 +63,26 @@ async function mapReduce(text) {
     verbose: true,
   });
 
-  const textSplitter = new RecursiveCharacterTextSplitter({ 
+  let textSplitter = new RecursiveCharacterTextSplitter({ 
     chunkSize: 5000,
     // chunkOverlap: 20,
   });
+  let smallDoc = true;
 
   try {
-    const docs = await textSplitter.createDocuments([text]);
+    let docs = await textSplitter.createDocuments([text]);
+
+    if (docs.length > 50) {
+      alert("large doc, previous size: " + docs.length);
+      textSplitter = new RecursiveCharacterTextSplitter({ 
+        chunkSize: 50000,
+        // chunkOverlap: 20,
+      });
+      docs = await textSplitter.createDocuments([text]);
+      smallDoc = false;
+      
+    }
+    alert(`docs length: ${docs.length}`);
     const chain = loadSummarizationChain(model, { 
       type: "map_reduce",
       returnIntermediateSteps: true,
@@ -78,7 +92,7 @@ async function mapReduce(text) {
       input_documents: docs,
     });
 
-    return {"status": 200, "summary": res.text}
+    return {"status": 200, "summary": res.text, "isSmall": smallDoc}
   } catch (error) {
     console.error(error);
     return {"status": 400, "error_name": error.name, "error_msg": error.message}

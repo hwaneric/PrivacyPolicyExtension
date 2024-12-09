@@ -53,6 +53,7 @@ const rubric = JSON.stringify({
 
 // Naive summarization strategy
 async function naiveRubric(text) {
+  alert("Using naive summarization strategy...");
 
   // Request payload
   const data = {
@@ -88,8 +89,9 @@ async function naiveRubric(text) {
 
     const completion = await response.json();
     // alert(completion)
-    // alert(completion.choices[0].message.content)
-    return {"status": 200, "ratings": completion.choices[0].message.content}
+    alert(completion.choices[0].message.content)
+    alert(completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, ''))
+    return {"status": 200, "ratings": completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, '')}
     
   } catch (error) {
     console.error("Error:", error);
@@ -110,7 +112,7 @@ async function mapReduceRubric(text) {
     model: "gpt-4o-mini",
     temperature: 0.7,
     apiKey: OPENAI_API_KEY,
-    verbose: true,
+    // verbose: true,
   })
 
   const combineModel = new ChatOpenAI({
@@ -118,7 +120,7 @@ async function mapReduceRubric(text) {
     model: "gpt-4o",
     temperature: 0.7,
     apiKey: OPENAI_API_KEY,
-    verbose: true,
+    // verbose: true,
   })
 
   const textSplitter = new RecursiveCharacterTextSplitter(
@@ -134,7 +136,7 @@ async function mapReduceRubric(text) {
   });
   try {
     const docs = await textSplitter.createDocuments([text]);
-    console.log("number of documents:", docs.length);
+    // throw new Error(`docs length: ${docs.length}`);
     
     const chain = loadQAChain(mapModel, { 
       type: "map_reduce",
