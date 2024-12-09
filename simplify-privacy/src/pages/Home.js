@@ -1,7 +1,7 @@
 /*global chrome*/
 import { H4 } from '../components/ui/typography';
 import Button from '@mui/material/Button';
-import { stuff, mapReduce } from "../helpers/summarization";
+import { mapReduce } from "../helpers/summarization";
 import { naiveRubric, mapReduceRubric } from "../helpers/rate-rubric";
 import { db } from '../firebase.config';
 import { setDoc, doc, getDoc } from "firebase/firestore"; 
@@ -70,7 +70,6 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
       // If domain not cached, get new result and store in cache 
       
       const result = await mapReduce(html);
-      // const result = await stuff(testText);
       if (result.status === 200) {
         summary = result.summary;        
         console.log(result.summary);
@@ -80,7 +79,6 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
         setErrorMsg(result.error_msg);
         return;
       }
-      // alert(summary);
 
       let ratingResult;
 
@@ -90,8 +88,6 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
         ratingResult = await naiveRubric(summary);
       }
 
-      // const ratingResult = await mapReduceRubric(html);  //PRIN change to actual text
-      // const ratingResult = await naiveRubric(testText); //change to actual text
       if (ratingResult.status === 200) {
         scores = JSON.parse(ratingResult.ratings);
       }
@@ -115,7 +111,6 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
  
   return (
     <>
-      {/* Insert Image here */}
       <img src={logo} alt="Logo" />;
       <H4 className="text-center"> Simplify Privacy Policies with One Click!</H4>
       <Button 

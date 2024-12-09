@@ -1,7 +1,7 @@
 import { OpenAI, ChatOpenAI } from "@langchain/openai";
 
 import { loadQAChain } from "langchain/chains";
-import { RecursiveCharacterTextSplitter, HTMLHeaderTextSplitter } from "langchain/text_splitter";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 const secrets = require('../env.json');
 const OPENAI_API_KEY = secrets.OPENAI_API_KEY;
@@ -53,11 +53,10 @@ const rubric = JSON.stringify({
 
 // Naive summarization strategy
 async function naiveRubric(text) {
-  // alert("Using naive summarization strategy...");
 
   // Request payload
   const data = {
-    model: "gpt-4o", //PRIN CHANGE BACK 
+    model: "gpt-4o",
     messages: [
       { role: "system", content: "You are a helpful assistant that rates privacy policies on the rubric we give you." },
       {
@@ -71,7 +70,6 @@ async function naiveRubric(text) {
   };
 
   // alert("Sending request to OpenAI...");
-  // throw new Error(`data: ${data.messages[1].content}`);
 
   // Make the POST request
   try {
@@ -88,9 +86,6 @@ async function naiveRubric(text) {
     }
 
     const completion = await response.json();
-    // alert(completion)
-    // alert(completion.choices[0].message.content)
-    // alert(completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, ''))
     return {"status": 200, "ratings": completion.choices[0].message.content.replace(/^```json\s*|\s*```$/g, '')}
     
   } catch (error) {
@@ -103,11 +98,6 @@ async function naiveRubric(text) {
 // MapReduce (aka chunking) summarization strategy
 async function mapReduceRubric(text) {
 
-  // const mapModel = new OpenAI({ 
-  //   temperature: 0.7,
-  //   apiKey: OPENAI_API_KEY,
-  //   verbose: true,
-  // });
   const mapModel = new ChatOpenAI({
     model: "gpt-4o-mini",
     temperature: 0.7,
@@ -136,7 +126,6 @@ async function mapReduceRubric(text) {
   });
   try {
     const docs = await textSplitter.createDocuments([text]);
-    // throw new Error(`docs length: ${docs.length}`);
     
     const chain = loadQAChain(mapModel, { 
       type: "map_reduce",
@@ -151,7 +140,6 @@ async function mapReduceRubric(text) {
       and the rating as an integer value, and with no additional text.`,
     });
     
-    // console.log("FINAL: ", res.text)
     return {"status": 200, "ratings": res.text.replace(/^```json\s*|\s*```$/g, '')} // Remove code block markdown
   } catch (error) {
     console.error(error);

@@ -39,8 +39,6 @@ async function stuff(text) {
     }
 
     const completion = await response.json();
-    // console.log(completion);
-    // console.log("Completion response:", completion.choices[0].message.content);
     return {"status": 200, "summary": completion.choices[0].message.content}
     
   } catch (error) {
@@ -52,10 +50,7 @@ async function stuff(text) {
 
 // MapReduce (aka chunking) summarization strategy
 async function mapReduce(text) {
-  // const model = new OpenAI({ 
-  //   temperature: 0.7,
-  //   apiKey: OPENAI_API_KEY,
-  // });
+
   const model = new ChatOpenAI({
     model: "gpt-4o-mini",
     temperature: 0.7,
@@ -65,7 +60,6 @@ async function mapReduce(text) {
 
   let textSplitter = new RecursiveCharacterTextSplitter({ 
     chunkSize: 5000,
-    // chunkOverlap: 20,
   });
   let smallDoc = true;
 
@@ -73,16 +67,13 @@ async function mapReduce(text) {
     let docs = await textSplitter.createDocuments([text]);
 
     if (docs.length > 50) {
-      // alert("large doc, previous size: " + docs.length);
       textSplitter = new RecursiveCharacterTextSplitter({ 
         chunkSize: 50000,
-        // chunkOverlap: 20,
       });
       docs = await textSplitter.createDocuments([text]);
       smallDoc = false;
       
     }
-    // alert(`docs length: ${docs.length}`);
     const chain = loadSummarizationChain(model, { 
       type: "map_reduce",
       returnIntermediateSteps: true,
