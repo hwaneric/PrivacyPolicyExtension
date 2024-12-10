@@ -29,7 +29,6 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
         if (message.action === "getSource") {
           console.log("HTML Source:", message.source);
           setHtml(message.source)
-          // alert(message.source)
         }
       });
 
@@ -43,7 +42,6 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
           {
             target: { tabId: tabs[0].id },
             func : getScript,
-            // files: ["../src/helpers/htmlScript.js"], // Inject the script
           },
           () => {
             console.log("Content script injected!");
@@ -69,6 +67,7 @@ function Home({setLoading, setSummary, setErrorName, setErrorMsg, setScores}) {
     } else {
       // If domain not cached, get new result and store in cache 
       
+      alert("Summarizing and rating privacy policy now - please stay on this tab until completion!");
       const result = await mapReduce(html);
       if (result.status === 200) {
         summary = result.summary;        
