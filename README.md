@@ -8,7 +8,7 @@ Hello CS1050 teaching staff! Running our project requires an OpenAI and Firebase
 
 To run the extension locally, follow the steps below:
 
-1. Open the project and `cd` into the `simplify-privacy` directory of the project.
+1. Clone the project. Then open the project and `cd` into the `simplify-privacy` directory of the project.
 2. Run `npm install`.
 3. Add a file titled `env.json` to the `simplify-privacy/src` directory. In the file, create a JSON object with the following structure:
    ```json
