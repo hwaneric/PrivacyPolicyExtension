@@ -1,7 +1,7 @@
 # PrivacyPolicyExtension
 A Chrome Extension for summarizing and scoring privacy policies
 
-# TO CS1050 TEACHING STAFF
+# To CS1050 Teaching Staff
 Hello CS1050 teaching staff! Running our project requires an OpenAI and Firebase API keys. If you would like to run the code locally, please reach out and we'd be happy to provide the necessary API keys to run the code!
 
 # Running Locally
