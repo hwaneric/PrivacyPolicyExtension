@@ -18,7 +18,9 @@ To run the extension locally, follow the steps below:
    
   ```
 
+
 4. Add a file titled firebase.config.js to the simplify-privacy/src directory. In the file, copy and paste the following code. Make sure to replace the placeholder with a Firebase API key:
+
 
   ```javascript
 
