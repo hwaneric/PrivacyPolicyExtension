@@ -44,7 +44,7 @@ To run the extension locally, follow the steps below:
    ```
 
 5. Run npm build.
-6. Load the unpacked extension to Chrome using the instructions found [here]([url](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked)).
+6. Load the unpacked extension to Chrome using the instructions found here: https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked
 
 
 
