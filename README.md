@@ -18,11 +18,10 @@ To run the extension locally, follow the steps below:
    ```
 
 
-4. Add a file titled firebase.config.js to the simplify-privacy/src directory. In the file, copy and paste the following code. Make sure to replace the placeholder with a Firebase API key:
+4. Add a file titled `firebase.config.js` to the simplify-privacy/src directory. In the file, copy and paste the following code. Make sure to replace the placeholder with a Firebase API key:
    ```javascript
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "firebase/app";
-    // https://firebase.google.com/docs/web/setup#available-libraries
     import { getFirestore } from "firebase/firestore";
     
     // Your web app's Firebase configuration
@@ -42,7 +41,7 @@ To run the extension locally, follow the steps below:
     export const db = getFirestore(app);
    ```
 
-5. Run npm build.
+5. Run `npm run build`.
 6. Load the unpacked extension to Chrome using the instructions found here: https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked
 
 
