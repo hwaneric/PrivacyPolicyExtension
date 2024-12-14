@@ -15,7 +15,9 @@ To run the extension locally, follow the steps below:
    {
      "OPENAI_API_KEY": "{INSERT OPENAI API KEY HERE}"
    }
+   
   ```
+
 4. Add a file titled firebase.config.js to the simplify-privacy/src directory. In the file, copy and paste the following code. Make sure to replace the placeholder with a Firebase API key:
   ```javascript
     // Import the functions you need from the SDKs you need
