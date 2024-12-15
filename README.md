@@ -41,8 +41,9 @@ To run the extension locally, follow the steps below:
     export const db = getFirestore(app);
    ```
 
-5. Run `npm run build`.
-6. Load the unpacked extension to Chrome using the instructions found here: https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked
+5. Run `npm install firebase`
+6. Run `npm run build`.
+7. Load the unpacked extension to Chrome using the instructions found here: https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked
 
 
 
