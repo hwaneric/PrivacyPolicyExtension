@@ -4,14 +4,14 @@ import Button from '@mui/material/Button';
 
 function Result({summary, scores}) {
   const overallScore = 
-    Object.values(scores).reduce((acc, value) => acc + value, 0) / Object.values(scores).length;
+    Object.values(scores).reduce((acc, value) => acc + value, 0);
  
   return (
     <>
       <div className="my-4">
-        <H4 className="text-center underline"> Privacy Score </H4>
+        <H4 className="text-center underline"> Privacy Score (out of 27) </H4>
         <div className="flex flex-row gap-8 items-center">
-          <H2 className="text-center"> {overallScore.toFixed(1)} </H2>
+          <H2 className="text-center"> {overallScore} </H2>
           <div className="flex flex-col">
             {/* <P className="mx-4"> {scores} </P> */}
             {Object.entries(scores).map(([category, score]) => (
